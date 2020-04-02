@@ -14,7 +14,7 @@ class neural_network:
         for iteration in range(num):
             output = self.think(inputs)
             error = outputs - output
-            adjustment = 0.001*np.dot(inputs.T, error)
+            adjustment = 0.000005*np.dot(inputs.T, error)
             self.weights += adjustment
 
     def think(self, inputs):
@@ -25,7 +25,7 @@ class trainer:
         self.variable = 0
 
     def solve(self, input):
-        output = (input[0] + input[1])*12 + 2
+        output = (input[0] + input[1])*2
         return output
 
     def train(self, inputs):
@@ -34,11 +34,23 @@ class trainer:
             outputs[input] = self.solve(inputs[input])
         return outputs
 
+class input_generator:
+    def __init__(self):
+        self.inputs = 0
+
+    def generate(self, num_inputs, num_generated):
+        self.inputs = np.zeros([num_generated, num_inputs])
+        for num_gen in range(num_generated):
+            for num_in in range(num_inputs):
+                self.inputs[num_gen, num_in] = np.random.random()*10+2
+        return self.inputs
+
 neural_network = neural_network()
 trainer = trainer()
-inputs = np.array([[2, 3], [1, 1], [2, 2], [4, 5], [1.5, 8], [7, 2], [6, 10]])
+input_generator = input_generator()
+inputs = input_generator.generate(2, 80)
 outputs = trainer.train(inputs)
 neural_network.train(inputs, outputs, 100000)
-test = np.array([[4, 20]])
+test = np.array([[8, 2]])
 print("Output: ", neural_network.think(test))
 print("Error: ", trainer.train(test) - neural_network.think(test))
